@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProvaPub.Models;
+using ProvaPub.OrderService;
 using ProvaPub.Repository;
 using ProvaPub.Services;
+using System.Globalization;
+using System.Reflection;
 
 namespace ProvaPub.Controllers
 {
@@ -16,10 +19,22 @@ namespace ProvaPub.Controllers
 	[Route("[controller]")]
 	public class Parte3Controller :  ControllerBase
 	{
-		[HttpGet("orders")]
-		public async Task<Order> PlaceOrder(string paymentMethod, decimal paymentValue, int customerId)
+        [HttpGet("orderCreditCard")]
+        public async Task<ActionResult<Order>> PlaceOrderCreditCard(decimal paymentValue, int customerId)
+        {
+            return await new CreditCardOrder().PayOrder(paymentValue, customerId);
+        }
+
+        [HttpGet("orderPix")]
+		public async Task<ActionResult<Order>> PlaceOrderPix(decimal paymentValue, int customerId)
 		{
-			return await new OrderService().PayOrder(paymentMethod, paymentValue, customerId);
-		}
-	}
+            return await new PixOrder().PayOrder(paymentValue, customerId);
+        }
+
+        [HttpGet("orderPayPal")]
+        public async Task<ActionResult<Order>> PlaceOrderPayPal(decimal paymentValue, int customerId)
+        {
+            return await new PayPalOrder().PayOrder(paymentValue, customerId);
+        }
+    }
 }
