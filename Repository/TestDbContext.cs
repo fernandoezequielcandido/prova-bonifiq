@@ -13,7 +13,12 @@ namespace ProvaPub.Repository
 		{
 		}
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public TestDbContext()
+        {
+            
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
 
@@ -21,16 +26,22 @@ namespace ProvaPub.Repository
 			modelBuilder.Entity<Product>().HasData(getProductSeed());
 		}
 
-		private Customer[] getCustomerSeed()
+		public static Customer[] getCustomerSeed()
 		{
 			List<Customer> result = new();
 			for (int i = 0; i < 20; i++)
 			{
-				result.Add(new Customer()
+				Customer customerInsert = new Customer((i+ 1), new Faker().Person.FullName);
+				if (i == 4)
 				{
-					 Id = i+1,
-					Name = new Faker().Person.FullName,
-				});
+					customerInsert.Orders.Add(new Order { OrderDate = DateTime.UtcNow });
+				}
+				if (i == 9)
+				{
+                    customerInsert.Orders.Add(new Order { Value = 105.87m, OrderDate = new DateTime(2022, 10, 10) });
+                }
+
+				result.Add(customerInsert);
 			}
 			return result.ToArray();
 		}
@@ -48,7 +59,7 @@ namespace ProvaPub.Repository
 			return result.ToArray();
 		}
 
-		public DbSet<Customer> Customers{ get; set; }
+		public virtual DbSet<Customer> Customers{ get; set; }
 		public DbSet<Product> Products{ get; set; }
 		public DbSet<Order> Orders { get; set; }
 	}

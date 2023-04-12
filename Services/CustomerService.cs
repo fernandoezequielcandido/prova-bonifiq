@@ -33,13 +33,13 @@ namespace ProvaPub.Services
             if (purchaseValue <= 0) throw new ArgumentOutOfRangeException(nameof(purchaseValue));
 
             //Business Rule: Non registered Customers cannot purchase
-            var customer = await _ctx.Customers.FindAsync(customerId);
+            var customer = await _ctx.Customers.FirstOrDefaultAsync(x => x.Id == customerId);
             if (customer == null) throw new InvalidOperationException($"Customer Id {customerId} does not exists");
 
             //Business Rule: A customer can purchase only a single time per month
-            var baseDate = DateTime.UtcNow.AddMonths(-1);
-            var ordersInThisMonth = await _ctx.Customers.CountAsync(s => s.Id == customerId && s.Orders.Any(w => w.OrderDate >= baseDate));
-            if (ordersInThisMonth > 1)
+            var baseDate = DateTime.UtcNow;
+            var ordersInThisMonth = await _ctx.Customers.CountAsync(s => s.Id == customerId && s.Orders.Any(w => w.OrderDate.Month == baseDate.Month));
+            if (ordersInThisMonth >= 1)
                 return false;
 
             //Business Rule: A customer that never bought before can make a first purchase of maximum 100,00

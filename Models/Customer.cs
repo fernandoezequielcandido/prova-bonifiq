@@ -1,9 +1,18 @@
-﻿namespace ProvaPub.Models
+﻿using System.Collections.ObjectModel;
+
+namespace ProvaPub.Models
 {
 	public class Customer
 	{
-		public int Id { get; set; }
-		public string Name { get; set; }
+        public Customer(int id, string name)
+        {
+            Id = id;
+            Name = name;
+            Orders = new Collection<Order>();    
+        }
+
+        public int Id { get; private set; }
+		public string Name { get; private set; }
 		public ICollection<Order> Orders { get; set; }
 	}
 }
