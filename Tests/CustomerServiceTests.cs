@@ -6,7 +6,6 @@ using ProvaPub.Repository;
 using Moq.EntityFrameworkCore;
 using ProvaPub.Services;
 using Xunit;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ProvaPub.Tests
 {
@@ -53,10 +52,25 @@ namespace ProvaPub.Tests
         }
 
         [Fact]
-        public void CanPurchase_InvalidCustomerId()
+        public void CanPurchase_CustomerIdThatDoesNotExist()
         {
             //invalid customerId
             Assert.Throws<System.InvalidOperationException>(() => controller4.CanPurchase(205, 20).GetAwaiter().GetResult());
         }
+
+        [Fact]
+        public void CanPurchase_InvalidCustomerId()
+        {
+            //invalid customerId
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => controller4.CanPurchase(-40, 20).GetAwaiter().GetResult());
+        }
+
+        [Fact]
+        public void CanPurchase_InvalidPurchaseValues()
+        {
+            //invalid value
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => controller4.CanPurchase(10, -20).GetAwaiter().GetResult());
+        }
+
     }
 }
