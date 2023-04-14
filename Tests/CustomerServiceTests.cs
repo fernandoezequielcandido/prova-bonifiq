@@ -66,7 +66,7 @@ namespace ProvaPub.Tests
         }
 
         [Fact]
-        public void CanPurchase_InvalidPurchaseValues()
+        public void CanPurchase_InvalidPurchaseValue()
         {
             //invalid value
             Assert.Throws<System.ArgumentOutOfRangeException>(() => controller4.CanPurchase(10, -20).GetAwaiter().GetResult());
